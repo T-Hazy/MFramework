@@ -1,10 +1,8 @@
 using System;
-using MFramework.UnityApplication;
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
 using UnityEngine;
 using Object = UnityEngine.Object;
+using MFramework.UnityApplication;
 
 public static class ApplicationManagerEditor
 {
