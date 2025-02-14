@@ -4,6 +4,14 @@
   "displayName": "MFramework",
   "description": "A reusable framework for Unity development.",
   "unity": "2023.3",
-  "dependencies": {
-  }
+  "author": {
+    "name": "当然是小喵咪呀",
+    "email": "1351820946@qq.com"
+  },
+  "documentation": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/T-Hazy/MFramework.git"
+  },
+  "dependencies": {}
 }
