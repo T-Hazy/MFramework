@@ -1,0 +1,9 @@
+{
+  "name": "com.thazy.mframework",
+  "version": "1.0.0",
+  "displayName": "MFramework",
+  "description": "A reusable framework for Unity development.",
+  "unity": "2023.3",
+  "dependencies": {
+  }
+}
