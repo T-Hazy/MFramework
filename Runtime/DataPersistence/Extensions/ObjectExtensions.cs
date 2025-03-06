@@ -1,6 +1,6 @@
 using System;
 
-namespace MFramework.DataPersistence.Extensions
+namespace MFramework.DataPersistence
 {
     public static class ObjectExtensions
     {

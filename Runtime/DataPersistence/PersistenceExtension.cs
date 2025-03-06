@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace MFramework.Extensions
+namespace MFramework.DataPersistence
 {
     public static class PersistenceExtension
     {
