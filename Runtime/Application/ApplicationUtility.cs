@@ -26,15 +26,16 @@ namespace MFramework.UnityApplication
         public static string applicationDirectory => Path.GetDirectoryName(Application.dataPath);
         public static string applicationPath => $"{applicationDirectory}\\{Application.productName}.exe";
 
-        public static string desktopShortcutPath =>
-            Path.Combine(desktopPath, $"{Application.productName}.exe - 快捷方式.lnk");
+        public static string desktopShortcutPath => Path.Combine(desktopPath, $"{Application.productName}.lnk");
+        public static string startupShortcutPath => Path.Combine(startupPath, $"{Application.productName}.lnk");
 
-        public static string startupShortcutPath =>
-            Path.Combine(startupPath, $"{Application.productName}.exe - 快捷方式.lnk");
+        public static string commonStartupShortcutPath =>
+            Path.Combine(commonStartupPath, $"{Application.productName}.lnk");
 
         public static string desktopPath => Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         public static string localDesktopPath => Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         public static string startupPath => Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+        public static string commonStartupPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonStartup);
         public static string programsPath => Environment.GetFolderPath(Environment.SpecialFolder.Programs);
         public static string localPath => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
@@ -53,7 +54,8 @@ namespace MFramework.UnityApplication
         public static string playerLogCollectDirectory => Path.Combine(applicationDirectory, "RuntimeLogs");
         public static string consoleLogPath => Application.consoleLogPath;
 
-        public static string programFilesX86Path => Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+        public static string programFilesX86Path =>
+            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
 
         public static DirectoryInfo CreateLocalDirectory(string directoryName)
         {
@@ -111,23 +113,38 @@ namespace MFramework.UnityApplication
             if (File.Exists(desktopShortcutPath)) File.Delete(desktopShortcutPath);
         }
 
-        public static void CreateStartupShortcut()
+        public static bool CreateCommonStartupShortcut()
         {
-            if (File.Exists(startupShortcutPath)) return;
-            CreateShortcut(applicationPath, startupShortcutPath);
+            return CreateShortcut(applicationPath, commonStartupShortcutPath);
+        }
+
+        public static bool CreateStartupShortcut()
+        {
+            if (File.Exists(commonStartupShortcutPath)) return false;
+            if (File.Exists(startupShortcutPath)) return false;
+            return CreateShortcut(applicationPath, commonStartupShortcutPath) || CreateShortcut(applicationPath, startupShortcutPath);
         }
 
         public static void DeleteStartupShortcut()
         {
-            if (File.Exists(desktopShortcutPath)) File.Delete(startupShortcutPath);
+            if (File.Exists(commonStartupShortcutPath)) File.Delete(commonStartupShortcutPath);
+            if (File.Exists(startupShortcutPath)) File.Delete(startupShortcutPath);
         }
 
-        public static void CreateShortcut(string targetPath, string shortcutPath)
+        public static bool CreateShortcut(string targetPath, string shortcutPath)
         {
-            IWshShell shell = new WshShell();
-            IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
-            shortcut.TargetPath = targetPath;
-            shortcut.Save();
+            try
+            {
+                IWshShell shell = new WshShell();
+                var shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
+                shortcut.TargetPath = targetPath;
+                shortcut.Save();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public static void CreateShortcut(string targetPath, DirectoryInfo directory)
