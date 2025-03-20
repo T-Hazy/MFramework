@@ -114,18 +114,22 @@ namespace MFramework.UnityApplication
         }
 
 
-
         public static bool CreateStartupShortcut()
         {
+            //使用Inno setup打包的程序可能在公共启动项中创建快捷方式
+            //因此需要先检测公共启动项中是否存在快捷方式
             if (File.Exists(commonStartupShortcutPath)) return false;
             if (File.Exists(startupShortcutPath)) return false;
-            if (CreateShortcut(applicationPath,commonStartupShortcutPath)) return true;
+            //通常Unity在公共启动项中创建快捷方式时会失败，需要解决以管理员权限运行的问题。
+            if (CreateShortcut(applicationPath, commonStartupShortcutPath)) return true;
+            //因此会在个人启动项中创建快捷方式
             if (CreateShortcut(applicationPath, startupShortcutPath)) return true;
             return false;
         }
 
         public static void DeleteStartupShortcut()
         {
+            //如果使用Inno setup安装的程序，则启动项可能在公共启动项中存在，因此需要先检测删除公共启动项中的快捷方式
             if (File.Exists(commonStartupShortcutPath)) File.Delete(commonStartupShortcutPath);
             if (File.Exists(startupShortcutPath)) File.Delete(startupShortcutPath);
         }
@@ -151,7 +155,7 @@ namespace MFramework.UnityApplication
             FileInfo targetFileInfo = new FileInfo(targetPath);
             IWshShell shell = new WshShell();
             IWshShortcut shortcut =
-                (IWshShortcut)shell.CreateShortcut($"{directory.FullName}\\{targetFileInfo.Name} - 快捷方式.lnk");
+                (IWshShortcut)shell.CreateShortcut($"{directory.FullName}\\{targetFileInfo.Name}.lnk");
             shortcut.TargetPath = targetPath;
             shortcut.Save();
         }
@@ -161,7 +165,7 @@ namespace MFramework.UnityApplication
             IWshShell shell = new WshShell();
             IWshShortcut shortcut =
                 (IWshShortcut)shell.CreateShortcut(
-                    $"{shortcutDirectoryInfo.FullName}\\{targetFileInfo.Name} - 快捷方式.lnk");
+                    $"{shortcutDirectoryInfo.FullName}\\{targetFileInfo.Name}");
             shortcut.TargetPath = targetFileInfo.FullName;
             shortcut.Save();
         }
