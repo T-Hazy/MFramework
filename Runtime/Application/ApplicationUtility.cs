@@ -113,16 +113,15 @@ namespace MFramework.UnityApplication
             if (File.Exists(desktopShortcutPath)) File.Delete(desktopShortcutPath);
         }
 
-        public static bool CreateCommonStartupShortcut()
-        {
-            return CreateShortcut(applicationPath, commonStartupShortcutPath);
-        }
+
 
         public static bool CreateStartupShortcut()
         {
             if (File.Exists(commonStartupShortcutPath)) return false;
             if (File.Exists(startupShortcutPath)) return false;
-            return CreateShortcut(applicationPath, commonStartupShortcutPath) || CreateShortcut(applicationPath, startupShortcutPath);
+            if (CreateShortcut(applicationPath,commonStartupShortcutPath)) return true;
+            if (CreateShortcut(applicationPath, startupShortcutPath)) return true;
+            return false;
         }
 
         public static void DeleteStartupShortcut()
